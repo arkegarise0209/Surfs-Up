@@ -53,6 +53,7 @@ def precipitation():
     precipitation = {date: prcp for date, prcp in data}
     return jsonify(precipitation)
 
+#Return list of stations from dataset
 @app.route("/api/v1.0/stations")
 def stations():
     #Query to retrieve all stations
