@@ -78,26 +78,26 @@ def tobs():
     temps = list(np.ravel(results))
     return jsonify(temps)
 
-#Retrive TMIN, TAVG, TMAX for given date range
-@app.route("/api/v1.0/temp/<start>")
 @app.route("/api/v1.0/temp/<start>/<end>")
 def stats(start=None, end=None):
-    #Define wanted values
-    values = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
+    """Return TMIN, TAVG, TMAX."""
+
+    # Select statement
+    sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
 
     if not end:
-        #Calculate TMIN, TAVG, TMAX for dates after start
-        results = session.query(*values).\
+        # calculate TMIN, TAVG, TMAX for dates greater than start
+        results = session.query(*sel).\
             filter(Measurement.date >= start).all()
-        #Create list of results
+        # Unravel results into a 1D array and convert to a list
         temps = list(np.ravel(results))
         return jsonify(temps)
 
     # calculate TMIN, TAVG, TMAX with start and stop
-    results = session.query(*values).\
+    results = session.query(*sel).\
         filter(Measurement.date >= start).\
         filter(Measurement.date <= end).all()
-    #Create list of results
+    # Unravel results into a 1D array and convert to a list
     temps = list(np.ravel(results))
     return jsonify(temps)
 
